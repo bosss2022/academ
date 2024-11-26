@@ -1,6 +1,6 @@
 <!-- Student Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('student_id', 'Student Id:') !!}
+    {!! Form::label('student_id', 'Student:') !!}
     <p>{{ $enrolment->student->admn_no }}  {{ $enrolment->student->surname }}  {{ $enrolment->student->first_name }}</p>
 </div>
 
@@ -12,7 +12,7 @@
 
 <!-- Units Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('units_id', 'Units Id:') !!}
+    {!! Form::label('units_id', 'Units:') !!}
     <p>{{ $enrolment->units->unit_name }}</p>
 </div>
 

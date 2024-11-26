@@ -17,8 +17,13 @@ class GradeDataTable extends DataTable
     public function dataTable($query)
     {
         $dataTable = new EloquentDataTable($query);
-
-        return $dataTable->addColumn('action', 'grades.datatables_actions');
+        return $dataTable->addColumn('action', 'grades.datatables_actions')
+        ->addColumn('unit_name', function ($grade) {
+            return $grade->enrolment ? $grade->enrolment->unit->unit_name : 'N/A';
+          })
+        ->addColumn('student_name', function ($grade) {
+            return $grade->enrolment->student->admn_no . ' ' . $grade->enrolment->student->surname .' ' . $grade->enrolment->student->first_name  ?? 'N/A';
+        });
     }
 
     /**
@@ -29,7 +34,7 @@ class GradeDataTable extends DataTable
      */
     public function query(Grade $model)
     {
-        return $model->newQuery();
+        return $model->newQuery()->with('enrolment.student', 'enrolment.unit');
     }
 
     /**
@@ -67,7 +72,8 @@ class GradeDataTable extends DataTable
     {
         return [
             'score',
-            'enrolment_id'
+            'unit_name'=> ['title' => 'Enrolled Unit'],
+        'student_name' => ['title' => 'Student Name'], // Custom title for the column
         ];
     }
 

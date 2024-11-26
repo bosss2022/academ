@@ -28,4 +28,9 @@ class Grade extends Model
     {
         return $this->belongsTo(\App\Models\Enrolment::class, 'enrolment_id');
     }
+    public function student()
+    {
+        return $this->enrolment->student();
+    }
+
 }

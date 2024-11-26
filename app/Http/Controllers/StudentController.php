@@ -8,9 +8,12 @@ use App\Http\Requests\UpdateStudentRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Course;
 use App\Models\Level;
+use App\Models\User;
 use App\Repositories\StudentRepository;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StudentController extends AppBaseController
 {
@@ -47,15 +50,82 @@ class StudentController extends AppBaseController
      */
     public function store(CreateStudentRequest $request)
     {
-        $input = $request->all();
-
-        $student = $this->studentRepository->create($input);
-
-        Flash::success('Student saved successfully.');
-
-        return redirect(route('students.index'));
+        // Debugging line to check incoming data
+        Log::info('Student Form Submitted', ['data' => $request->all()]);
+        
+        // Start a database transaction
+        DB::beginTransaction();
+    
+        try {
+            // Get the validated data
+            $validatedData = $request->validated(); // Use validated data instead of raw $request->all()
+    
+            // Ensure all required fields are included in the data being saved
+            $studentData = [
+                'admn_no' => $validatedData['admn_no'],
+                'first_name' => $validatedData['first_name'],
+                'surname' => $validatedData['surname'],
+                'other_names' => $validatedData['other_names'],
+                'email' => $validatedData['email'],
+                'phone_number' => $validatedData['phone_number'],
+                'address' => $validatedData['address'],
+                'id_number' => $validatedData['id_number'],
+                'date_of_admission' => $validatedData['date_of_admission'],
+                'date_of_birth' => $validatedData['date_of_birth'],
+                'level_id' => $validatedData['level_id'],
+                'course_id' => $validatedData['course_id'],
+                'gender' => $validatedData['gender'],
+                'status' => $validatedData['status'],
+                // Add any other necessary fields here
+            ];
+    
+            // Create the student in the students table
+            $student = $this->studentRepository->create($studentData);
+    
+            // Check if the email already exists in the 'users' table
+            $existingUser = User::where('email', $request->email)->first();
+    
+            if ($existingUser) {
+                // If the email already exists, update the existing user
+                $existingUser->update([
+                    'name' => $student->first_name . ' ' . $student->surname,
+                    'password' => bcrypt('default_password'),
+                ]);
+    
+                // Use the existing user's ID
+                $user = $existingUser;
+            } else {
+                // Create a new user
+                $user = User::create([
+                    'name' => $student->first_name . ' ' . $student->surname,
+                    'email' => $student->email,
+                    'password' => bcrypt('default_password'),
+                ]);
+            }
+    
+            // Associate the user_id with the student
+            $student->user_id = $user->id;
+            $student->save();
+    
+            // Commit the transaction
+            DB::commit();
+    
+            Flash::success('Student saved successfully.');
+            return redirect(route('students.index'));
+    
+        } catch (\Exception $e) {
+            // Rollback the transaction if any error occurs
+            DB::rollBack();
+    
+            Log::error('Error occurred during student creation', ['error' => $e->getMessage()]);
+            
+            // Handle the error and show a flash message
+            Flash::error('An error occurred while saving the student.');
+            return redirect(route('students.create'))->withInput();
+        }
     }
-
+    
+    
     /**
      * Display the specified Student.
      */

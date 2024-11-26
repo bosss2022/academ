@@ -6,6 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
+    protected static function booted()
+{
+    static::created(function ($student) {
+        // Automatically create a user record when a student is created
+        $user = User::create([
+            'name' => $student->first_name . ' ' . $student->surname,
+            'email' => $student->email, // Assuming you have an email field
+            'password' => bcrypt('default_password'), // You can set a default password or generate one
+        ]);
+        
+        // Associate the user with the student
+        $student->user_id = $user->id;
+        $student->save();
+    });
+}
     public $table = 'students';
 
     public $fillable = [
@@ -103,4 +118,11 @@ class Student extends Model
     );
 }
 
+public function user()
+{
+    return $this->belongsTo(User::class);
 }
+
+}
+
+

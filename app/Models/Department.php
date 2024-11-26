@@ -55,4 +55,5 @@ class Department extends Model
     {
         return $this->hasMany(\App\Models\Student::class, 'department_id');
     }
+
 }

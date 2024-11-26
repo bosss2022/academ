@@ -8,11 +8,12 @@ use App\Http\Requests\UpdateEmployeeRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Department;
 use App\Models\School;
+use App\Models\User;
 use App\Repositories\EmployeeRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Flash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeController extends AppBaseController
 {
@@ -39,23 +40,87 @@ class EmployeeController extends AppBaseController
     public function create()
     {
         $schools = School::pluck('name', 'id');
-        return view('employees.create', compact('schools'));
+        $departments = Department::pluck('name', 'id');
+        return view('employees.create', compact('schools', 'departments'));
     }
 
     /**
      * Store a newly created Employee in storage.
      */
-    public function store(CreateEmployeeRequest $request)
-    {
-        $input = $request->all();
 
-        $employee = $this->employeeRepository->create($input);
-
-        Flash::success('Employee saved successfully.');
-
-        return redirect(route('employees.index'));
-    }
-
+     public function store(CreateEmployeeRequest $request)
+     {
+         // Debugging line to check incoming data
+         Log::info('Form Submitted', ['data' => $request->all()]);
+         
+         // Start a database transaction
+         DB::beginTransaction();
+     
+         try {
+             // Get the validated data
+             $validatedData = $request->validated(); // Use validated data instead of raw $request->all()
+     
+             // Ensure all required fields are included in the data being saved
+             $employeeData = [
+                 'first_name' => $validatedData['first_name'],
+                 'last_name' => $validatedData['last_name'],
+                 'email' => $validatedData['email'],
+                 'phone_number' => $validatedData['phone_number'],
+                 'id_number' => $validatedData['id_number'],
+                 'title' => $validatedData['title'],
+                 'address' => $validatedData['address'],
+                 'school_id' => $validatedData['school_id'],
+                 'department_id' => $validatedData['department_id'],
+                 // Add any other necessary fields here
+             ];
+     
+             // Create the employee in the employees table
+             $employee = $this->employeeRepository->create($employeeData);
+     
+             // Check if the email already exists in the 'users' table
+             $existingUser = User::where('email', $request->email)->first();
+     
+             if ($existingUser) {
+                 // If the email already exists, update the existing user
+                 $existingUser->update([
+                     'name' => $employee->first_name . ' ' . $employee->last_name,
+                     'password' => bcrypt('default_password'),
+                 ]);
+     
+                 // Use the existing user's ID
+                 $user = $existingUser;
+             } else {
+                 // Create a new user
+                 $user = User::create([
+                     'name' => $employee->first_name . ' ' . $employee->last_name,
+                     'email' => $employee->email,
+                     'password' => bcrypt('default_password'),
+                 ]);
+             }
+     
+             // Associate the user_id with the employee
+             $employee->user_id = $user->id;
+             $employee->save();
+     
+             // Commit the transaction
+             DB::commit();
+     
+             Flash::success('Employee saved successfully.');
+             return redirect(route('employees.index'));
+     
+         } catch (\Exception $e) {
+             // Rollback the transaction if any error occurs
+             DB::rollBack();
+     
+             Log::error('Error occurred during employee creation', ['error' => $e->getMessage()]);
+             
+             // Handle the error and show a flash message
+             Flash::error('An error occurred while saving the employee.');
+             return redirect(route('employees.create'))->withInput();
+         }
+     }
+     
+     
     /**
      * Display the specified Employee.
      */
@@ -134,35 +199,4 @@ class EmployeeController extends AppBaseController
 
         return redirect(route('employees.index'));
     }
-
-
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'id_number' => ['required'],
-        ]);
-
-        if (Auth::guard('employee')->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended('employees.index');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::guard('employee')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/Auth/login');
- 
-        }
-        
 }
-

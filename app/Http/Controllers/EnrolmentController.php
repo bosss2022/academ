@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\GradeService;
 use App\DataTables\EnrolmentDataTable;
 use App\Http\Requests\CreateEnrolmentRequest;
 use App\Http\Requests\UpdateEnrolmentRequest;
@@ -17,11 +18,16 @@ class EnrolmentController extends AppBaseController
 {
     /** @var EnrolmentRepository $enrolmentRepository*/
     private $enrolmentRepository;
-
-    public function __construct(EnrolmentRepository $enrolmentRepo)
+    public function __construct(EnrolmentRepository $enrolmentRepo, GradeService $gradeService)
     {
         $this->enrolmentRepository = $enrolmentRepo;
+        $this->gradeService = $gradeService;
     }
+    
+  /*  public function __construct(EnrolmentRepository $enrolmentRepo)
+    {
+        $this->enrolmentRepository = $enrolmentRepo;
+    }*/
 
     /**
      * Display a listing of the Enrolment.
@@ -140,5 +146,31 @@ class EnrolmentController extends AppBaseController
         Flash::success('Enrolment deleted successfully.');
 
         return redirect(route('enrolments.index'));
+    }
+    protected $gradeService;
+
+    /*public function __construct(GradeService $gradeService)
+    {
+        $this->gradeService = $gradeService;
+    }
+*/
+    public function updateGrade(Request $request, $enrolmentId)
+    {
+        try {
+            // Update the grade score using the service
+            $grade = $this->gradeService->updateGradeScore($enrolmentId);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Grade updated successfully.',
+                'data' => $grade,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update grade.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

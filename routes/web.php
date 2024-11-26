@@ -1,8 +1,9 @@
 <?php
+
+use App\Http\Controllers\EnrolmentController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\RoleMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,29 +18,11 @@ use App\Http\Middleware\RoleMiddleware;
 
 Route::get('/', function () {
     return view('welcome');
-
 });
 
-
-Route::middleware(['auth:employee'])->group(function () {
-  Route::get('/home', function () {
-      return view('employee.index');
-  })->name('employee.index');
-});
-
-
-//Route::middleware(['role:admin'])->group(function () {
-  //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-//});
- 
- //Route::middleware(['role:user'])->group(function () {
-  //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
- //});
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
-
-
 
 Route::resource('students', App\Http\Controllers\StudentController::class);
 Route::resource('courses', App\Http\Controllers\CourseController::class);
@@ -54,3 +37,10 @@ Route::resource('receipts', App\Http\Controllers\ReceiptController::class);
 Route::resource('lecturers', App\Http\Controllers\LecturerController::class);
 Route::resource('enrolments', App\Http\Controllers\EnrolmentController::class);
 Route::resource('grades', App\Http\Controllers\GradeController::class);
+Route::resource('exams', App\Http\Controllers\ExamController::class);
+Route::resource('courseworks', App\Http\Controllers\CourseworkController::class);
+Route::resource('lessons', App\Http\Controllers\LessonController::class);
+Route::resource('attendances', App\Http\Controllers\AttendanceController::class);
+
+Route::post('/enrolments/{enrolmentId}/update-grade', [EnrolmentController::class, 'updateGrade'])->name('enrolments.update-grade');
+
