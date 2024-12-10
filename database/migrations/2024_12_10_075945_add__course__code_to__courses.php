@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            $table->foreign(['enrolment_id'], 'fk_grades_enrolments')->references(['id'])->on('enrolments')->onUpdate('cascade')->onDelete('cascade');
+        Schema::table('courses', function (Blueprint $table) {
+            $table->string('course_code', 100);
         });
     }
 
@@ -21,8 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('grades', function (Blueprint $table) {
-            $table->dropForeign('fk_grades_enrolments');
-        });
-    }
+        Schema::table('courses', function (Blueprint $table) {
+            $table->dropColumn(['course_code']);
+        
+    });
+}
 };

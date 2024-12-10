@@ -1,3 +1,9 @@
+<!-- Course Code Field -->
+<div class="col-sm-12">
+    {!! Form::label('course_code', 'Course Code:') !!}
+    <p>{{ $course->course_code }}</p>
+</div>
+
 <!-- Name Field -->
 <div class="col-sm-12">
     {!! Form::label('name', 'Name:') !!}

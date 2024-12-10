@@ -18,13 +18,29 @@ class CourseworkDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'courseworks.datatables_actions')
-        ->addColumn('unit_name', function ($coursework) {
-            return $coursework->enrolment ? $coursework->enrolment->unit->unit_name : 'N/A';
-          })
-          ->addColumn('student_name', function (Coursework $coursework) {
-              return $coursework->student->admn_no . ' - ' . $coursework->student->first_name . ' ' . $coursework->student->surname;
-          });
+        return $dataTable
+            ->addColumn('action', 'courseworks.datatables_actions')
+            ->addColumn('unit_name', function ($coursework) {
+                return $coursework->enrolment ? $coursework->enrolment->unit->unit_name : 'N/A';
+            })
+            ->addColumn('student_name', function (Coursework $coursework) {
+                return $coursework->student->admn_no . ' - ' . $coursework->student->first_name . ' ' . $coursework->student->surname;
+            })
+            ->addColumn('cat_1', function (Coursework $coursework) {
+                return $coursework->cat_1 ?? 'Incompleted'; // Show 'N/A' if the value is null
+            })
+            ->addColumn('cat_2', function (Coursework $coursework) {
+                return $coursework->cat_2 ?? 'Incompleted';
+            })
+            ->addColumn('assignment_1', function (Coursework $coursework) {
+                return $coursework->assignment_1 ?? 'Incompleted';
+            })
+            ->addColumn('assignment_2', function (Coursework $coursework) {
+                return $coursework->assignment_2 ?? 'Incompleted';
+            })
+            ->addColumn('assignment_3', function (Coursework $coursework) {
+                return $coursework->assignment_3 ?? 'Incompleted';
+            });
     }
 
     /**
@@ -72,9 +88,14 @@ class CourseworkDataTable extends DataTable
     protected function getColumns()
     {
         return [
-           'student_name' => ['title' => 'Student Name'],
-            'unit_name'=> ['title' => 'Enrolled Unit'],
-            'marks',
+            'student_name' => ['title' => 'Student Name'],
+            'unit_name' => ['title' => 'Enrolled Unit'],
+            'cat_1' => ['title' => 'CAT 1'],
+            'cat_2' => ['title' => 'CAT 2'],
+            'assignment_1' => ['title' => 'Assignment 1'],
+            'assignment_2' => ['title' => 'Assignment 2'],
+            'assignment_3' => ['title' => 'Assignment 3'],
+            'marks' => ['title' => 'Total Marks'],
         ];
     }
 
@@ -88,3 +109,4 @@ class CourseworkDataTable extends DataTable
         return 'courseworks_datatable_' . time();
     }
 }
+

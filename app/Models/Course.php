@@ -9,6 +9,7 @@ class Course extends Model
     public $table = 'courses';
 
     public $fillable = [
+        'course_code',
         'name',
         'level_id',
         'department_id'
@@ -19,6 +20,7 @@ class Course extends Model
     ];
 
     public static array $rules = [
+        'course_code'=> 'required',
         'name' => 'required|string|max:65535',
         'level_id' => 'required',
         'department_id' => 'required',

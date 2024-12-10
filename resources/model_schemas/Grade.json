@@ -60,6 +60,18 @@
         "inView": false
     },
     {
+        "name": "letter_grade",
+        "dbType": "string",
+        "htmlType": "text",
+        "validations": "nullable|string|max:191|nullable|string|max:191",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "type": "relation",
         "relation": "mt1,Enrolment,enrolment_id"
     }

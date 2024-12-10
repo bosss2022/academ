@@ -54,6 +54,7 @@ class CourseworkController extends AppBaseController
    
 public function store(CreateCourseworkRequest $request)
 {
+    
     // Get the input from the request
     $input = $request->all();
 
@@ -117,6 +118,7 @@ public function store(CreateCourseworkRequest $request)
      */
     public function update($id, UpdateCourseworkRequest $request)
     {
+        
         $coursework = $this->courseworkRepository->find($id);
 
         if (empty($coursework)) {

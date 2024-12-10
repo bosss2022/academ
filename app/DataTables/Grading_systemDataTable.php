@@ -2,11 +2,11 @@
 
 namespace App\DataTables;
 
-use App\Models\Unit;
+use App\Models\Grading_system;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
-class UnitDataTable extends DataTable
+class Grading_systemDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -18,18 +18,16 @@ class UnitDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'units.datatables_actions')
-                          ->editColumn('course_id', function ($student) {
-                            return $student->course ? $student->course->course_code . '- ' .$student->course->name: 'N/A';
-                          });
+        return $dataTable->addColumn('action', 'grading_systems.datatables_actions');
     }
-  /**
+
+    /**
      * Get query source of dataTable.
      *
-     * @param \App\Models\Unit $model
+     * @param \App\Models\Grading_system $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Unit $model)
+    public function query(Grading_system $model)
     {
         return $model->newQuery();
     }
@@ -68,9 +66,9 @@ class UnitDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'unit_code',
-            'unit_name',
-            'course_id'=> ['title' => 'Course'] ,
+            'grade',
+            'min_score',
+            'max_score'
         ];
     }
 
@@ -81,6 +79,6 @@ class UnitDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'units_datatable_' . time();
+        return 'grading_systems_datatable_' . time();
     }
 }

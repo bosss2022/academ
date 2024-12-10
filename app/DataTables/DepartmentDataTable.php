@@ -18,15 +18,8 @@ class DepartmentDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable
-        ->addColumn('action', 'departments.datatables_actions')
-        ->editColumn('employee_no', function ($department) {
-            return $department->employee ? $department->employee->title . ' ' . $department->employee->last_name : 'N/A';
-        })
-        ->editColumn('school_id', function ($department) {
-            return $department->school ? $department->school->name : 'N/A';
-        });
-}
+        return $dataTable->addColumn('action', 'departments.datatables_actions');
+    }
 
     /**
      * Get query source of dataTable.
@@ -36,9 +29,8 @@ class DepartmentDataTable extends DataTable
      */
     public function query(Department $model)
     {
-        return $model->newQuery()
-        ->with(['employee:id,title,last_name', 'school:id,name']);
-}
+        return $model->newQuery();
+    }
 
     /**
      * Optional method if you want to use html builder.
@@ -75,8 +67,7 @@ class DepartmentDataTable extends DataTable
     {
         return [
             'name',
-            'employee_no' => ['title' => 'Employee Name'],
-            'school_id' => ['title' => 'School Name']
+            'school_id'
         ];
     }
 

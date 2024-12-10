@@ -69,6 +69,7 @@ class CourseDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'course_code'=>['Course Code'],
             'name',
             // Display the related 'level' name instead of 'level_id'
             'level_name' => ['name' => 'level.name', 'data' => 'level.name'],

@@ -23,7 +23,7 @@
 
         <div class="clearfix"></div>
 
-        <div class="card">
+        <div class="card table-responsive">
             @include('courseworks.table')
         </div>
     </div>

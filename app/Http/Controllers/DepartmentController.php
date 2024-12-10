@@ -6,13 +6,9 @@ use App\DataTables\DepartmentDataTable;
 use App\Http\Requests\CreateDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
 use App\Http\Controllers\AppBaseController;
-use App\Models\Employee;
-use App\Models\School;
 use App\Repositories\DepartmentRepository;
 use Illuminate\Http\Request;
 use Flash;
-use Illuminate\Support\Facades\DB;
-use Laracasts\Flash\Flash as FlashFlash;
 
 class DepartmentController extends AppBaseController
 {
@@ -38,10 +34,7 @@ class DepartmentController extends AppBaseController
      */
     public function create()
     {
-        $schools = School::pluck('name', 'id');
-        $employees = Employee::pluck(DB::raw("CONCAT(title, ' ', last_name)"), 'id');
-        return view('departments.create', compact('schools', 'employees'));
-
+        return view('departments.create');
     }
 
     /**
@@ -64,20 +57,15 @@ class DepartmentController extends AppBaseController
     public function show($id)
     {
         $department = $this->departmentRepository->find($id);
-    
+
         if (empty($department)) {
             Flash::error('Department not found');
+
             return redirect(route('departments.index'));
         }
-    
-        // Retrieve the employee’s title and last name using the `employee_no` (ID)
-        $employeeName = Employee::where('id', $department->employee_no)
-                                ->select(DB::raw("CONCAT(title, ' ', last_name) as full_name"))
-                                ->value('full_name');
-    
-        return view('departments.show', compact('department', 'employeeName'));
+
+        return view('departments.show')->with('department', $department);
     }
-    
 
     /**
      * Show the form for editing the specified Department.
@@ -91,10 +79,8 @@ class DepartmentController extends AppBaseController
 
             return redirect(route('departments.index'));
         }
-        $schools = School::pluck('name', 'id');
-        $employees = Employee::pluck(DB::raw("CONCAT(title, ' ', last_name)"), 'id');
 
-        return view('departments.edit', compact('department', 'employees', 'schools'));
+        return view('departments.edit')->with('department', $department);
     }
 
     /**

@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('fees', function (Blueprint $table) {
-            $table->integer('id', true);
-            $table->integer('course_id')->index('fk_fees_courses');
-            $table->integer('expected_amount');
+        Schema::table('grades', function (Blueprint $table) {
+            $table->string('letter_grade')->nullable(); // E.g., A, B+
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('fees');
+        Schema::table('grades', function (Blueprint $table) {
+            $table->dropColumn('letter_grade');
+        });
     }
 };

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Enrolment;
 use App\Models\Grade;
+use App\Models\Grading_system;
 
 class GradeService
 {
@@ -28,6 +29,13 @@ class GradeService
             ['enrolment_id' => $enrolmentId],
             ['score' => round($totalScore, 2)] // Round to 2 decimal places
         );
+        $grading = Grading_system::where('min_score', '<=', $totalScore)
+        ->where('max_score', '>=', $totalScore)
+        ->first();
+
+if ($grading) {
+$grade->update(['letter_grade' => $grading->grade]);
+}
 
         return $grade;
     }

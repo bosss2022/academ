@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('phone_number');
             $table->string('address');
             $table->integer('id_number')->nullable();
-            $table->date('date_of_admission')->default('curdate()');
+            $table->date('date_of_admission');
             $table->integer('department_id')->nullable()->index('fk_students_department');
             $table->integer('course_id')->index('fk_students_course');
             $table->string('gender', 50);

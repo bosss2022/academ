@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('fees', function (Blueprint $table) {
-            $table->foreign(['course_id'], 'fk_fees_courses')->references(['id'])->on('courses')->onUpdate('cascade')->onDelete('cascade');
+        Schema::create('grading_system', function (Blueprint $table) {
+            $table->id();
+            $table->string('grade'); // e.g., A, B+, etc.
+            $table->integer('min_score'); // e.g., 70
+            $table->integer('max_score'); // e.g., 79
+            $table->timestamps();
         });
+    
     }
 
     /**
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('fees', function (Blueprint $table) {
-            $table->dropForeign('fk_fees_courses');
-        });
+        Schema::dropIfExists('grading_system');
     }
 };

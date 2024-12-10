@@ -44,3 +44,5 @@ Route::resource('attendances', App\Http\Controllers\AttendanceController::class)
 
 Route::post('/enrolments/{enrolmentId}/update-grade', [EnrolmentController::class, 'updateGrade'])->name('enrolments.update-grade');
 
+
+Route::resource('grading_systems', App\Http\Controllers\Grading_systemController::class);

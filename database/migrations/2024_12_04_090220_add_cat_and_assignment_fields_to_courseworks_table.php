@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courseworks', function (Blueprint $table) {
-            $table->foreign(['student_id'], 'fk_coursework_students')->references(['id'])->on('students')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign(['enrolment_id'], 'fk_courseworks_enrolments')->references(['id'])->on('enrolments')->onUpdate('cascade')->onDelete('cascade');
+            $table->decimal('cat_1', 5, 2)->nullable();
+            $table->decimal('cat_2', 5, 2)->nullable();
+            $table->decimal('assignment_1', 5, 2)->nullable();
+            $table->decimal('assignment_2', 5, 2)->nullable();
+            $table->decimal('assignment_3', 5, 2)->nullable();
         });
     }
 
@@ -23,8 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('courseworks', function (Blueprint $table) {
-            $table->dropForeign('fk_coursework_students');
-            $table->dropForeign('fk_courseworks_enrolments');
+            $table->dropColumn(['cat_1', 'cat_2', 'assignment_1', 'assignment_2', 'assignment_3']);
         });
     }
 };

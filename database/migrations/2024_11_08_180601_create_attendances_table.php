@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->integer('id', true);
             $table->integer('student_id')->index('fk_attendances_students');
-            $table->date('attendance_date')->default('curdate()');
+            $table->date('attendance_date');
             $table->tinyText('attendance_status');
             $table->integer('lesson_id')->index('fk_attendances_lessons');
             $table->timestamp('created_at')->nullable()->useCurrent();

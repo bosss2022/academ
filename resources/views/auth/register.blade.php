@@ -4,7 +4,7 @@
             <div class="register-logo">
                 <img src="https://www.learnsoftbeliotechsolutions.co.ke/img/logo.png" alt="logo" style="max-width: 80px; margin-bottom: 10px;">
                 <a href="{{ url('/') }}" style="font-size: 24px; font-weight: bold; color: #00796b;">
-                    <span style="color: #0288d1;"></span>ACARDX
+                    <span style="color: #0288d1;"></span>ACADX
                 </a>
             </div>
 

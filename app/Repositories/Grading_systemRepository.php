@@ -2,15 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Models\Grade;
+use App\Models\Grading_system;
 use App\Repositories\BaseRepository;
 
-class GradeRepository extends BaseRepository
+class Grading_systemRepository extends BaseRepository
 {
     protected $fieldSearchable = [
-        'score',
-        'enrolment_id',
-        'letter_grade'
+        'grade',
+        'min_score',
+        'max_score'
     ];
 
     public function getFieldsSearchable(): array
@@ -20,6 +20,6 @@ class GradeRepository extends BaseRepository
 
     public function model(): string
     {
-        return Grade::class;
+        return Grading_system::class;
     }
 }

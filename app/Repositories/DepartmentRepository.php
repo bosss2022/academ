@@ -9,7 +9,6 @@ class DepartmentRepository extends BaseRepository
 {
     protected $fieldSearchable = [
         'name',
-        'employee_no',
         'school_id'
     ];
 

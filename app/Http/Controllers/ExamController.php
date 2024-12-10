@@ -60,7 +60,6 @@ class ExamController extends AppBaseController
     // Create the exam record
     $exam = $this->examRepository->create($input);
 
-    // Fetch the enrolment associated with the exam (assuming there's a relationship)
     $enrolment = $exam->enrolment;
 
     if ($enrolment->exams->isNotEmpty() && $enrolment->courseworks->isNotEmpty()) {
