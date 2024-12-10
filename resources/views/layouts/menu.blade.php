@@ -39,6 +39,14 @@
         <p>Departments</p>
     </a>
 </li>
+ 
+  
+<li class="nav-item">
+    <a href="{{ route('year.index') }}" class="nav-link {{ Request::is('year*') ? 'active' : '' }}">
+       <i class="fas fa-laptop-house text-teal"></i>
+        <p>Year</p>
+    </a>
+</li>
 
 <li class="nav-item">
     <a href="{{ route('schools.index') }}" class="nav-link {{ Request::is('schools*') ? 'active' : '' }}">
